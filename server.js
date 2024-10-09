@@ -7,8 +7,8 @@ const dotEnv = require('dotenv');
 const isLoggedIn = require('./middlewares/isLoggedIn');
 const {dbConnect} = require('./config/dbConnect.js')
 const cookieParser = require('cookie-parser');
-const News = require('./models/News');
 const path = require('path');
+const cors = require('cors');
 
 // Initialize Express app
 const app = express();
@@ -17,6 +17,7 @@ dotEnv.config();
 dbConnect();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
