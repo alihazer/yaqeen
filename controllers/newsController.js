@@ -17,6 +17,27 @@ const getNews = async (req, res) => {
   }
 };
 
+const getNewById = async (req, res) => {
+  try {
+    const news = await News.findById(req.params.id);
+    if(!news){
+      return res.status(404).json({
+        status: false,
+        message: 'News not found'
+      });
+    }
+    res.status(200).json({
+      status: true,
+      data: news
+    });
+  } catch (err) {
+    return res.status(500).json({
+      "error": "Server error",
+      "message": err?.message
+    })
+  }
+}
+
 
 
 // Create a new news entry
@@ -72,4 +93,5 @@ const createNews = async (req, res) => {
 module.exports = {
   getNews,
   createNews,
+  getNewById
 };
