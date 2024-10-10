@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Prayer List</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-9ndCyUa3Y6zXwIJg4jjaQrFsbJUEgiXYntxFvYxEwBvjAq4lgmPkk6eIRr46fRA1"
+    crossorigin="anonymous"
+  >
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+  <style>
+    body {
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+    }
+
+    .table th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="text-center">Admin - Prayer List</h1>
+    <center>    <button class="btn btn-success" onclick="window.location.href='/add-news'">Add News</button>
+    </center><br><br>
+    <table class="table table-striped table-hover" width="80%">
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Speaker</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="prayerTableBody">
+        <!-- News data will be injected here by JavaScript -->
+
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-mQ93LlhKBOk5yJ2Y6ieFeYiKe8MAQar02gAnQRhiFgKlvhOaAO0EVCEfFGjC1zH6" crossorigin="anonymous"></script>
+
+  <script>
+    async function fetchNews() {
+      try {
+        // Fetch news data from the backend
+        const response = await fetch('/api/prayers');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const newsList = await response.json();
+
+        // Get the table body element where news will be appended
+        const prayerTableBody = document.getElementById('prayerTableBody');
+
+        // Clear any previous content in the table body
+        prayerTableBody.innerHTML = '';
+
+        // Loop through each news item and create a row in the table
+        newsList.data.forEach(news => {
+          const row = document.createElement('tr');
+          const titleCell = document.createElement('td');
+          titleCell.textContent = news.title;
+          row.appendChild(titleCell);
+          const dateCell = document.createElement('td');
+          dateCell.textContent = news.speaker
+          row.appendChild(dateCell);
+          // Append the row to the table body
+          prayerTableBody.appendChild(row);
+
+
+
+          // add actions to the table (view edit delete)
+        const actionsCell = document.createElement('td');
+        const viewButton = document.createElement('button');
+        viewButton.textContent = 'View';
+        viewButton.className = 'btn btn-primary';
+        viewButton.onclick = function() {
+          window.location.href = `/prayers/${news._id}`;
+        };
+        actionsCell.appendChild(viewButton);
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.className = 'btn btn-warning';
+        editButton.onclick = function() {
+          window.location.href = `/prayers/${news._id}/edit`;
+        };
+        actionsCell.appendChild(editButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'btn btn-danger';
+        deleteButton.onclick = async function() {
+          const confirmDelete = confirm('Are you sure you want to delete this news?');
+          if (confirmDelete) {
+            const deleteResponse = await fetch(`/api/prayers/${news._id}`, {
+              method: 'DELETE',
+            });
+            if (deleteResponse.ok) {
+              window.location.reload();
+            } else {
+              alert('Failed to delete news');
+            }
+          }
+        };
+        actionsCell.appendChild(deleteButton);
+        row.appendChild(actionsCell);
+
+
+        });
+        
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      }
+    }
+
+    // Call the fetchNews function when the page loads
+    window.onload = fetchNews;
+  </script>
+
+</body>
+</html>

@@ -42,6 +42,31 @@ document.getElementById('addNewsForm')?.addEventListener('submit', async (e) => 
     }
 });
 
+document.getElementById('addPrayerForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const audio = document.getElementById('audio').value;
+    const speaker = document.getElementById('speaker').value;
+
+
+    const response = await fetch('/api/prayers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({ title, description, audio, speaker }),
+    });
+    console.log(response);
+    if (response.ok) {
+        alert('News added successfully!');
+        window.location.href = '/prayers'; // Redirect to home page after adding news
+    } else {
+        alert('Failed to add news!');
+    }
+});
+
 document.getElementById('addAdminForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value;

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدعاء</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #666;
+            text-align: right;
+        }
+        audio {
+            width: 100%;
+            margin: 20px 0;
+        }
+        #speaker {
+            font-weight: bold;
+            color: #444;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back arrow -->
+        <a href="/prayers" style="text-decoration: none; color: #333;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+           
+        <h1 id="title"></h1>
+        <audio id="audio" controls></audio>
+        <p id="speaker"></p>
+        <p id="description"></p>
+
+    </div>
+
+    <script>
+        const prayerId = window.location.pathname.split('/').pop();
+        fetch(`/api/prayers/${prayerId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(prayer => {
+                document.getElementById('title').innerText = prayer.data.title;
+                document.getElementById('description').innerText = prayer.data.description;
+                document.getElementById('audio').src = prayer.data.audio;
+                document.getElementById('speaker').innerText = `الملقي: ${prayer.data.speaker}`;
+            })
+            .catch(error => console.error('There was an error:', error));
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Prayer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Add Prayer</h2>
+        <form id="addPrayerForm" method="post">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Body:</label>
+                <textarea class="form-control" id="description" name="description" required cols="100" rows="100"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="source">Audio:</label>
+                <input type="text" class="form-control" id="audio" name="audio" required>
+            </div>
+            <div class="form-group">
+                <label for="source">Speaker:</label>
+                <input type="text" class="form-control" id="speaker" name="speaker" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Prayer</button>
+        </form>
+    </div>
+    <script src="/script.js"></script>
+</body>
+</html>

@@ -26,6 +26,9 @@ app.use(express.static('public'));
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/prayers', require('./routes/prayerRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 
 
 
@@ -57,8 +60,7 @@ app.use('/api/notifications', require('./routes/notificationRoutes'));
 //     }
 // });
 
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/notifications', require('./routes/notificationRoutes'));
+
 
 app.get('/home' , isLoggedIn ,(req, res) => {
     res.render('home');
@@ -83,6 +85,18 @@ app.get('/add-admin', isLoggedIn ,(req, res)=>{
 
 app.get('/news', isLoggedIn ,(req, res) => {
     res.render('news');
+});
+
+app.get('/prayers', isLoggedIn ,(req, res) => {
+    res.render('allPrayers');
+});
+
+app.get('/add-prayer', isLoggedIn ,(req, res) => {
+    res.render('addPrayer');
+});
+
+app.get('/prayers/:id', isLoggedIn ,(req, res) => {
+    res.render('getPrayer');
 });
 
 // Start the server
