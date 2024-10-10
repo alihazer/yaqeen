@@ -38,8 +38,6 @@ const getNewById = async (req, res) => {
   }
 }
 
-
-
 // Create a new news entry
 const createNews = async (req, res) => {
 
@@ -133,9 +131,6 @@ const deleteNews = async (req, res)=>{
     })
   }
 }
-
-
-
 
 
 module.exports = {

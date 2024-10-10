@@ -114,7 +114,7 @@
         deleteButton.textContent = 'Delete';
         deleteButton.className = 'btn btn-danger';
         deleteButton.onclick = async function() {
-          const confirmDelete = confirm('Are you sure you want to delete this news?');
+          const confirmDelete = confirm('Are you sure you want to delete this prayer?');
           if (confirmDelete) {
             const deleteResponse = await fetch(`/api/prayers/${news._id}`, {
               method: 'DELETE',
@@ -122,7 +122,7 @@
             if (deleteResponse.ok) {
               window.location.reload();
             } else {
-              alert('Failed to delete news');
+              alert('Failed to delete prayer');
             }
           }
         };

@@ -88,3 +88,24 @@ document.getElementById('addAdminForm')?.addEventListener('submit', async (e) =>
         alert('Failed to add admin!');
     }
 });
+
+document.getElementById('addAwarForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('content', document.getElementById('content').value);
+    formData.append('image', document.getElementById('image').files[0]); 
+    
+    const response = await fetch('/api/awar', {
+        method: 'POST',
+        body: formData, // Send formData
+    });
+
+    if (response.ok) {
+        alert('Awareness added successfully!');
+        window.location.href = '/home';
+    } else {
+        alert('Failed to add Awareness!');
+    }
+});

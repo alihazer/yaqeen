@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const admin = require('firebase-admin');
+// const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
 const Token = require('./models/token');
 const dotEnv = require('dotenv');
@@ -32,6 +32,7 @@ app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/prayers', require('./routes/prayerRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/awar', require('./routes/AwarenessRoutes'));
 
 // EJS routes
 app.use(require('./routes/ejsRoutes/ejs.routes'));

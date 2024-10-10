@@ -2,6 +2,7 @@ const express = require('express');
 const isLoggedIn = require('../../middlewares/isLoggedIn');
 const News = require('../../models/News.js');
 const Prayer = require('../../models/Prayer.js');
+const Awareness = require('../../models/Awareness.js');
 const router = express.Router();
 
 
@@ -13,7 +14,6 @@ router.get('/news', isLoggedIn ,(req, res) => {
 router.get('/news/:id', isLoggedIn ,(req, res) => {
     res.render('getNews');
 });
-
 
 router.get('/', (req, res) => {
     res.redirect('/home');
@@ -39,7 +39,6 @@ router.get('/logout', (req, res) => {
 router.get('/add-admin', isLoggedIn ,(req, res)=>{
     res.render('addAdmin')
 })
-
 
 router.get('/prayers', isLoggedIn ,(req, res) => {
     res.render('allPrayers');
@@ -72,6 +71,22 @@ router.get('/prayers/:id/edit', isLoggedIn ,async(req, res) => {
         res.render('editPrayer', { prayer });
     } catch (error) {
         console.error('Error getting prayer:', error);
+    }
+});
+
+router.get('/Awar', isLoggedIn ,(req, res) => {
+    res.render('Awar');
+});
+router.get('/addAwar', isLoggedIn ,(req, res) => {
+    res.render('addAwar', { message: '' });
+});
+router.get('/awar/:id/edit', isLoggedIn ,async(req, res) => {
+    try {
+        const awarId = req.params.id;
+        const awar = await Awareness.findById(awarId);
+        res.render('editAwar', { awar });
+    } catch (error) {
+        console.error('Error getting awar:', error);
     }
 });
 
