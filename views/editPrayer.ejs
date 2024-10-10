@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Prayer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Prayer</h2>
+        <form id="editPrayerForm" method="post">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" id="title" name="title" value="<%=prayer.title%>" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Body:</label>
+                <textarea class="form-control" id="description" name="description" required cols="100" rows="100"><%=prayer.description%></textarea>
+            </div>
+            <div class="form-group">
+                <label for="source">Audio:</label>
+                <input type="text" class="form-control" id="audio" name="audio" value="<%=prayer.audio%>" required>
+            </div>
+            <div class="form-group">
+                <label for="source">Speaker:</label>
+                <input type="text" class="form-control" id="speaker" name="speaker" value="<%=prayer.speaker%>" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit Prayer</button>
+        </form>
+    </div>
+    <script>
+        const editSpeakerForm = document.getElementById('editPrayerForm');
+        editSpeakerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const body = document.getElementById('description').value;
+            const audio = document.getElementById('audio').value;
+            const speaker = document.getElementById('speaker').value;
+
+            if(!title || !body || !audio || !speaker) {
+                alert('Please fill all fields');
+                return;
+            }
+            const response = await fetch('/api/prayers/<%=prayer._id%>', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, body, audio, speaker })
+            });
+            if (response.ok) {
+                alert('Prayer updated successfully');
+                window.location.href = '/prayers';
+            } else {
+                alert('Failed to update prayer');
+            }
+        });
+    </script>
+</body>
+</html>

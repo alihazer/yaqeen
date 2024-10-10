@@ -10,25 +10,31 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const cors = require('cors');
 
-// Initialize Express app
+
 const app = express();
 
 dotEnv.config();
 dbConnect();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(cors());
 
+// Middlewares
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static('public'));
+
+// Api routes
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/prayers', require('./routes/prayerRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+
+// EJS routes
+app.use(require('./routes/ejsRoutes/ejs.routes'));
 
 
 
@@ -60,47 +66,13 @@ app.use('/api/notifications', require('./routes/notificationRoutes'));
 //     }
 // });
 
-
-
-app.get('/home' , isLoggedIn ,(req, res) => {
-    res.render('home');
-});
-
-app.get('/login', (req, res) => {
-    res.render('login');
-});
-
-app.get('/add-news', isLoggedIn ,(req, res) => {
-    res.render('addNews', { message: '' });
-});
-
-app.get('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.redirect('/login');
-});
-
-app.get('/add-admin', isLoggedIn ,(req, res)=>{
-    res.render('addAdmin')
-})
-
-app.get('/news', isLoggedIn ,(req, res) => {
-    res.render('news');
-});
-
-app.get('/prayers', isLoggedIn ,(req, res) => {
-    res.render('allPrayers');
-});
-
-app.get('/add-prayer', isLoggedIn ,(req, res) => {
-    res.render('addPrayer');
-});
-
-app.get('/prayers/:id', isLoggedIn ,(req, res) => {
-    res.render('getPrayer');
+// Not found route
+app.get('*', (req, res) => {
+    res.render('404');
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

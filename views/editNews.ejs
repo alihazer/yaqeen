@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add News</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Add News</h2>
+        <form id="editNewsForm" method="post">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" id="title" name="title" value="<%=news.title%>" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Content:</label>
+                <!-- The default value is the fetched from the backend -->
+                
+                <textarea class="form-control" id="content" name="content" required cols="100" rows="20">
+                    <%=news.content%>
+                </textarea>
+            </div>
+            <div class="form-group">
+                <label for="source">Source:</label>
+                <input type="text" class="form-control" id="source" name="source" value="<%=news.source%>" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit News</button>
+        </form>
+    </div>
+    <script>
+        const editNewsForm = document.getElementById('editNewsForm');
+        editNewsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const source = document.getElementById('source').value;
+
+            if(!title || !content || !source) {
+                alert('Please fill all fields');
+                return;
+            }
+            const response = await fetch('/api/news/<%=news._id%>', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, content, source })
+            });
+            if (response.ok) {
+                alert('News updated successfully');
+                window.location.href = '/news';
+            } else {
+                alert('Failed to update news');
+            }
+        });
+    </script>
+</body>
+</html>

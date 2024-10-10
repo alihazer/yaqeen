@@ -1,0 +1,83 @@
+const express = require('express');
+const isLoggedIn = require('../../middlewares/isLoggedIn');
+const News = require('../../models/News.js');
+const Prayer = require('../../models/Prayer.js');
+const router = express.Router();
+
+
+router.get('/news', isLoggedIn ,(req, res) => {
+    res.render('news');
+});
+
+
+router.get('/news/:id', isLoggedIn ,(req, res) => {
+    res.render('getNews');
+});
+
+
+router.get('/', (req, res) => {
+    res.redirect('/home');
+});
+
+router.get('/home' , isLoggedIn ,(req, res) => {
+    res.render('home');
+});
+
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
+router.get('/add-news', isLoggedIn ,(req, res) => {
+    res.render('addNews', { message: '' });
+});
+
+router.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/login');
+});
+
+router.get('/add-admin', isLoggedIn ,(req, res)=>{
+    res.render('addAdmin')
+})
+
+
+router.get('/prayers', isLoggedIn ,(req, res) => {
+    res.render('allPrayers');
+});
+
+router.get('/add-prayer', isLoggedIn ,(req, res) => {
+    res.render('addPrayer');
+});
+
+router.get('/prayers/:id', isLoggedIn ,(req, res) => {
+    res.render('getPrayer');
+});
+
+router.get('/news/:id/edit', isLoggedIn, async(req, res) => {
+    try {
+        const news = await News.findById(req.params.id);
+        if(!news){
+            res.redirect('/not-found');
+        }
+        res.render('editNews', { news });
+    } catch (error) {
+        console.error('Error getting news:', error);
+    }
+});
+
+router.get('/prayers/:id/edit', isLoggedIn ,async(req, res) => {
+    try {
+        const prayerId = req.params.id;
+        const prayer = await Prayer.findById(prayerId);
+        res.render('editPrayer', { prayer });
+    } catch (error) {
+        console.error('Error getting prayer:', error);
+    }
+});
+
+module.exports = router;
+
+
+
+
+

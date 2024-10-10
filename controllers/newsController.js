@@ -86,6 +86,54 @@ const createNews = async (req, res) => {
   }
 };
 
+// edit news
+const editNews = async (req, res)=>{
+  const { title, content, source } = req.body;
+  if (!title || !content || !source) {
+    return res.status(400).json({ message: 'Please provide all required fields' });
+  }
+  try {
+    const news = await News.findByIdAndUpdate(req.params.id, { title, content, source }, { new: true });
+    if(!news){
+      return res.status(404).json({
+        status: false,
+        message: 'News not found'
+      });
+    }
+    return res.status(200).json({
+      status: true,
+      data: news
+    });
+  } catch (err) {
+    return res.status(500).json({
+      "error": "Server error",
+      "message": err?.message
+    })
+  }
+}
+
+// delete news
+const deleteNews = async (req, res)=>{
+  try {
+    const news = await News.findByIdAndDelete(req.params.id);
+    if(!news){
+      return res.status(404).json({
+        status: false,
+        message: 'News not found'
+      });
+    }
+    return res.status(200).json({
+      status: true,
+      message: 'News deleted successfully'
+    });
+  }catch(err){
+    return res.status(500).json({
+      "error": "Server error",
+      "message": err?.message
+    })
+  }
+}
+
 
 
 
@@ -93,5 +141,7 @@ const createNews = async (req, res) => {
 module.exports = {
   getNews,
   createNews,
-  getNewById
+  getNewById,
+  editNews,
+  deleteNews
 };
