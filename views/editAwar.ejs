@@ -25,28 +25,33 @@
             <button type="submit" class="btn btn-primary">Edit Awareness</button>
         </form>
     </div>
-    <script>
-        const editAwarForm = document.getElementById('editAwarForm');
-        editAwarForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            const image = document.getElementById('image').value;
+    
+    <script >
+const editSpeakerForm = document.getElementById('editAwarForm');
+editSpeakerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Create FormData object and append form values
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('content', document.getElementById('content').value);
+    formData.append('image', document.getElementById('image').files[0]);
 
-            const response = await fetch('/api/awar/<%=awar._id%>', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ title, content,image })
-            });
-            if (response.ok) {
-                alert('Awareness updated successfully');
-                window.location.href = '/home';
-            } else {
-                alert('Failed to update Awareness');
-            }
-        });
+    // Send FormData via fetch (no need to manually set Content-Type)
+    const response = await fetch(`/api/awar/<%= awar._id %>`, {
+        method: 'PUT',
+        body: formData // Send FormData directly
+    });
+
+    if (response.ok) {
+        alert('Awareness updated successfully');
+        window.location.href = '/Awar';
+    } else {
+        alert('Failed to update awareness');
+    }
+});
+
     </script>
+
 </body>
 </html>

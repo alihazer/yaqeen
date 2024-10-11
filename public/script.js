@@ -109,3 +109,24 @@ document.getElementById('addAwarForm')?.addEventListener('submit', async (e) => 
         alert('Failed to add Awareness!');
     }
 });
+
+document.getElementById('editAwarForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('content', document.getElementById('content').value);
+    formData.append('image', document.getElementById('image').files[0]); 
+
+    const response = await fetch(`/api/awar/${awar._id}`, {
+        method: 'put',
+        body: formData, // Send formData
+    });
+
+    if (response.ok) {
+        alert('Awareness update successfully!');
+        window.location.href = '/home';
+    } else {
+        alert('Failed to update Awareness!');
+    }
+});

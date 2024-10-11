@@ -36,7 +36,7 @@ app.use('/api/awar', require('./routes/AwarenessRoutes'));
 
 // EJS routes
 app.use(require('./routes/ejsRoutes/ejs.routes'));
-
+app.use('/images', express.static('images'));
 
 
 
