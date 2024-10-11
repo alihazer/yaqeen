@@ -4,8 +4,8 @@ const Awareness = require('../models/Awareness');
 const createAwar = async (req, res) => {
     try{
         const { title, content} = req.body;
-        const image = req.file ? `/images/${req.file.filename}` : null;
-
+        // const image = req.file ? `/images/${req.file.filename}` : null;
+        const image = null;
         const newAwarenes = new Awareness({ title, content,image});
         await newAwarenes.save();
 
