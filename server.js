@@ -2,9 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 // const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
-const Token = require('./models/token');
 const dotEnv = require('dotenv');
-const isLoggedIn = require('./middlewares/isLoggedIn');
 const {dbConnect} = require('./config/dbConnect.js')
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -33,6 +31,7 @@ app.use('/api/prayers', require('./routes/prayerRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/awar', require('./routes/AwarenessRoutes'));
+app.use('/api/token', require('./routes/tokenRoutes.js'));
 
 // EJS routes
 app.use(require('./routes/ejsRoutes/ejs.routes'));
@@ -47,25 +46,6 @@ app.use('/images', express.static('images'));
 
 
 
-// Endpoint to save FCM token
-// app.post('/api/tokens', async (req, res) => {
-//     const { token, userId } = req.body;
-//     try {
-//         // Check if the token already exists
-//         let existingToken = await Token.findOne({ token });
-//         if (existingToken) {
-//             return res.status(200).json({ message: 'Token already exists' });
-//         }
-
-//         // Save the new token
-//         const newToken = new Token({ token, userId });
-//         await newToken.save();
-//         res.status(201).json({ message: 'Token saved successfully' });
-//     } catch (error) {
-//         console.error('Error saving token:', error);
-//         res.status(500).json({ message: 'Error saving token' });
-//     }
-// });
 
 // Not found route
 app.get('*', (req, res) => {
