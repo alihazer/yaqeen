@@ -5,6 +5,13 @@ const Token = require("../models/token.js");
 const createToken = async (req, res)=>{
     const { token } = req.body;
     try {
+        const alreadyFound = await Token.findOne({ token });
+        if(alreadyFound){
+            return res.status(400).json({
+                status: false,
+                message: "Token already exists"
+            });
+        }
         const newToken = await Token.create({ token });
         return res.status(201).json({
             status: true,
