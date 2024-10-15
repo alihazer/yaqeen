@@ -1,4 +1,5 @@
 const News = require('../models/News');
+const admin = require('firebase-admin');
 const Token = require('../models/token');
 
 // Get all news
@@ -40,49 +41,49 @@ const getNewById = async (req, res) => {
 
 // Create a new news entry
 const createNews = async (req, res) => {
-
-    const { title, content, source } = req.body;
-    if (!title || !content || !source) {
-      // If validation fails, return immediately to prevent further code execution
+  const { title, content, source } = req.body;
+  if (!title || !content || !source) {
       return res.status(400).json({ message: 'Please provide all required fields' });
-    }
+  }
 
-    // Create a new news document
-    try{
-    const newNews = await News.create({ title, content, source });
-    if(newNews){
-      console.log('News created successfully:', newNews);
-      return res.status(201).json({
-        status: true,
-        message: 'News created successfully',
-      });
-    }
+  // Create a new news document
+  try {
+      const newNews = await News.create({ title, content, source });
+      if (newNews) {
+          console.log('News created successfully:', newNews);
+          
+          // Prepare the notification payload
+          const payload = {
+              notification: {
+                  title: 'New News: ' + title,
+                  body: content.split(' ').slice(0, 10).join(' ') + '...',
+              },
+          };
 
+          // Fetch all active tokens from the database
+          const tokens = await Token.find({ isActive: true }).select('token -_id');
+          if(tokens.length != 0){
+            const tokensArray = tokens.map(token => token.token);
 
-//     // If you need to send notifications, uncomment the code below
-//     // Fetch all tokens from the database
-//     // const tokens = await Token.find().select('token -_id');
+            // Send notification to all tokens
+            const response = await admin.messaging().sendToDevice(tokensArray, payload);
+            console.log('Notification sent successfully:', response); 
+          }
 
-//     // Prepare the notification payload
-//     // const payload = {
-//     //     notification: {
-//     //         title: 'New News: ' + title,
-//     //         body: content,
-//     //     },
-//     // };
-
-//     // const tokensArray = tokens.map(token => token.token);
-
-//     // Send notification to all tokens
-//     // const response = await admin.messaging().sendToDevice(tokensArray, payload);
-//     // console.log('Notification sent successfully:', response); 
-
-
-
+          return res.status(201).json({
+              status: true,
+              message: 'News created successfully and notification sent.',
+          });
+      }
   } catch (err) {
-    console.error('Error creating news:', err);
+      console.error('Error creating news:', err);
+      return res.status(500).json({
+          "error": "Server error",
+          "message": err?.message
+      });
   }
 };
+
 
 // edit news
 const editNews = async (req, res)=>{

@@ -1,10 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// const admin = require('firebase-admin');
 const bodyParser = require('body-parser');
 const dotEnv = require('dotenv');
 const {dbConnect} = require('./config/dbConnect.js')
 const cookieParser = require('cookie-parser');
+const serviceAccount = require('./config/serviceAccountKey.json');
+const admin = require('firebase-admin');
 const path = require('path');
 const cors = require('cors');
 
@@ -39,11 +40,9 @@ app.use('/images', express.static('images'));
 
 
 
-// Firebase Admin Initialization
-// admin.initializeApp({
-//     credential: admin.credential.applicationDefault(), 
-// });
-
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+});
 
 
 

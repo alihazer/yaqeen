@@ -1,6 +1,5 @@
 const Token = require("../models/token.js");
 
-
 // create new token
 const createToken = async (req, res)=>{
     const { token } = req.body;
@@ -31,7 +30,7 @@ const updateToken = async (req, res)=>{
     try {
         const tokenFound = await Token.findOne({ token });
         if(!tokenFound){
-            return res.status(404).jsom({
+            return res.status(404).json({
                 status: false,
                 message: "Token not found"
             });
