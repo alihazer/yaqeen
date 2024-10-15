@@ -12,6 +12,7 @@ const createToken = async (req, res)=>{
             });
         }
         const newToken = await Token.create({ token });
+        console.log("Token created succesfully", newToken);
         return res.status(201).json({
             status: true,
             message: "Token created succesfully"
