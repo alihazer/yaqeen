@@ -130,3 +130,27 @@ document.getElementById('editAwarForm')?.addEventListener('submit', async (e) =>
         alert('Failed to update Awareness!');
     }
 });
+
+const sendNotificationForm = document.getElementById('sendNotificationForm');
+if (sendNotificationForm) {
+    sendNotificationForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const message = document.getElementById('content').value;
+
+        const response = await fetch('/api/notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ title, message }),
+        });
+
+        if (response.ok) {
+            alert('Notification sent successfully!');
+            window.location.href = '/home';
+        } else {
+            alert('Failed to send notification!');
+        }
+    });
+}

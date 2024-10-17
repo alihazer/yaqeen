@@ -1,4 +1,6 @@
 const Notification = require('../models/notification');
+const Token = require('../models/token');
+const admin = require('firebase-admin');
 
 // Create a new notification
 const createNotification = async (req, res, next) => {
@@ -11,9 +13,28 @@ const createNotification = async (req, res, next) => {
 
     const notification = new Notification({
       title,
-      message,
-      user: req.user._id,
+      message
     });
+
+    // send notification to all active devices
+    const tokens = await Token.find({ isActive: true }).select('token -_id');
+    if (tokens.length > 0) {
+      const tokensArray = tokens.map(token => token.token);
+
+      const payload = {
+        notification: {
+          title,
+          body: message,
+        },
+        data: {
+          title,
+          message
+        },
+        tokens: tokensArray,
+      };
+
+      await admin.messaging().sendEachForMulticast({ payload });
+    }
 
     await notification.save();
     res.status(201).json(notification);

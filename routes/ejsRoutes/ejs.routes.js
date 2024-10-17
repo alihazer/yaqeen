@@ -90,6 +90,11 @@ router.get('/awar/:id/edit', isLoggedIn ,async(req, res) => {
     }
 });
 
+router.get('/add-notification', isLoggedIn ,(req, res) => {
+    res.render('sendNotification');
+});
+
+
 module.exports = router;
 
 

@@ -1,12 +1,13 @@
 const express = require('express');
 const { createNotification, getNotifications } = require('../controllers/notificationController');
-const { protect } = require('../middlewares/authMiddleware');
+const isLoggedIn = require('../middlewares/isLoggedIn.js');
+
 const router = express.Router();
 
 // Create a new notification (admin only)
-router.post('/', protect, createNotification);
+router.post('/', isLoggedIn ,createNotification);
 
 // Get notifications for the authenticated user
-router.get('/', protect, getNotifications);
+router.get('/', getNotifications);
 
 module.exports = router;

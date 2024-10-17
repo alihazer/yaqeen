@@ -22,6 +22,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static('public'));
 
+app.use('/', require('./routes/ejsRoutes/ejs.routes.js'));
+
 // Api routes
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -33,7 +35,7 @@ app.use('/api/awar', require('./routes/AwarenessRoutes'));
 app.use('/api/token', require('./routes/tokenRoutes.js'));
 
 // EJS routes
-app.use(require('./routes/ejsRoutes/ejs.routes'));
+
 app.use('/images', express.static('images'));
 
 const serviceAccount = {

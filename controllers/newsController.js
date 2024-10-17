@@ -43,44 +43,74 @@ const getNewById = async (req, res) => {
 const createNews = async (req, res) => {
   const { title, content, source } = req.body;
   if (!title || !content || !source) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
+    return res.status(400).json({ message: 'Please provide all required fields' });
   }
 
   // Create a new news document
   try {
-      const newNews = await News.create({ title, content, source });
-      if (newNews) {
-          console.log('News created successfully:', newNews);
-          
-          // Prepare the notification payload
-          const payload = {
-              notification: {
-                  title: 'New News: ' + title,
-                  body: content.split(' ').slice(0, 10).join(' ') + '...',
-              },
-          };
+    const newNews = await News.create({ title, content, source });
 
-          // Fetch all active tokens from the database
-          const tokens = await Token.find({ isActive: true }).select('token -_id');
-          if(tokens.length != 0){
-            const tokensArray = tokens.map(token => token.token);
+    if (newNews) {
+      console.log('News created successfully:', newNews);
 
-            // Send notification to all tokens
-            const response = await admin.messaging().sendToDevice(tokensArray, payload);
-            console.log('Notification sent successfully:', response); 
-          }
+      // Fetch all active tokens from the database
+      const tokens = await Token.find({ isActive: true }).select('token -_id');
+      if (tokens.length > 0) {
+        const tokensArray = tokens.map(token => token.token);
 
-          return res.status(201).json({
-              status: true,
-              message: 'News created successfully and notification sent.',
+        // Prepare the message payload
+        const message = {
+          notification: {
+            title: title,
+            body: content.split(' ').slice(0, 10).join(' ') + '...',
+          },
+          data: {
+            title: title,
+          },
+          tokens: tokensArray,
+        };
+
+        // Send notification to all tokens
+        const response = await admin.messaging().sendEachForMulticast(message);
+        console.log('Notification sent successfully:', response);
+        console.log(response.responses);
+
+        // Check for failures
+        if (response.failureCount > 0) {
+          response.responses.forEach((result, index) => {
+            if (result.error) {
+              console.error(`Error sending notification to ${tokensArray[index]}: ${result.error.message}`);
+              console.error(`Error details: ${JSON.stringify(result.error, null, 2)}`);  // Log full error details
+            }
           });
+        }
+
+        return res.status(201).json({
+          status: true,
+          message: 'News created successfully and notification sent.',
+        });
+      } else {
+        console.log('No active tokens available to send notifications.');
+        return res.status(200).json({
+          status: false,
+          message: 'No active tokens available.',
+        });
       }
-  } catch (err) {
-      console.error('Error creating news:', err);
-      return res.status(500).json({
-          "error": "Server error",
-          "message": err?.message
+    } else {
+      return res.status(400).json({
+        status: false,
+        message: 'Failed to create news.',
       });
+    }
+  } catch (error) {
+    console.error('Error creating news or sending notification:', error.message);
+    console.error('Error stack trace:', error.stack);
+
+    return res.status(500).json({
+      status: false,
+      message: 'An error occurred while creating news or sending notification.',
+      error: error.message,
+    });
   }
 };
 
