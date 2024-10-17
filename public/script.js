@@ -137,13 +137,14 @@ if (sendNotificationForm) {
         e.preventDefault();
         const title = document.getElementById('title').value;
         const message = document.getElementById('content').value;
+        const externalLink = document.getElementById('externalLink').value;
 
         const response = await fetch('/api/notifications', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ title, message }),
+            body: JSON.stringify({ title, message, externalLink }),
         });
 
         if (response.ok) {

@@ -7,6 +7,7 @@ const createNotification = async (req, res, next) => {
   try {
     const title = req.body.title;
     const body = req.body.message;
+    const externalLink = req.body.externalLink;
     if (!title || !body) {
       return res.status(400).json({ message: 'Please provide all required fields' });
     }
@@ -15,30 +16,31 @@ const createNotification = async (req, res, next) => {
     if (tokens.length > 0) {
       const tokensArray = tokens.map(token => token.token);
       // Prepare the message payload
+      let data;
+      if (externalLink) {
+        data = {
+          title: title,
+          body: body,
+          externalLink: externalLink,
+        };
+      } else {
+        data = {
+          title: title,
+          body: body,
+        };
+      }
       const message = {
         notification: {
           title: title,
           body: body
         },
-        data: {
-          title: title,
-        },
+        data: data,
         tokens: tokensArray,
       };
       console.log('Message payload:', message);
       // Send notification to all tokens
       const response = await admin.messaging().sendEachForMulticast(message);
-      console.log(response.responses)
 
-      // Check for failures
-      if (response.failureCount > 0) {
-        response.responses.forEach((result, index) => {
-          if (result.error) {
-            console.error(`Error sending notification to ${tokensArray[index]}: ${result.error.message}`);
-            console.error(`Error details: ${JSON.stringify(result.error, null, 2)}`);  // Log full error details
-          }
-        });
-      }
       return res.status(201).json({
         status: true,
         message: 'News created successfully and notification sent.',

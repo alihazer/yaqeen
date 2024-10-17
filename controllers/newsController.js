@@ -73,18 +73,6 @@ const createNews = async (req, res) => {
 
         // Send notification to all tokens
         const response = await admin.messaging().sendEachForMulticast(message);
-        console.log('Notification sent successfully:', response);
-        console.log(response.responses);
-
-        // Check for failures
-        if (response.failureCount > 0) {
-          response.responses.forEach((result, index) => {
-            if (result.error) {
-              console.error(`Error sending notification to ${tokensArray[index]}: ${result.error.message}`);
-              console.error(`Error details: ${JSON.stringify(result.error, null, 2)}`);  // Log full error details
-            }
-          });
-        }
 
         return res.status(201).json({
           status: true,
