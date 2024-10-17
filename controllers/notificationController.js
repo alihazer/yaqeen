@@ -5,43 +5,52 @@ const admin = require('firebase-admin');
 // Create a new notification
 const createNotification = async (req, res, next) => {
   try {
-    const { title, message } = req.body;
-
-    if (!title || !message) {
+    const title = req.body.title;
+    const body = req.body.message;
+    if (!title || !body) {
       return res.status(400).json({ message: 'Please provide all required fields' });
     }
 
-    const notification = new Notification({
-      title,
-      message
-    });
-
-    // send notification to all active devices
     const tokens = await Token.find({ isActive: true }).select('token -_id');
     if (tokens.length > 0) {
       const tokensArray = tokens.map(token => token.token);
-
-      const payload = {
+      // Prepare the message payload
+      const message = {
         notification: {
-          title,
-          body: message,
+          title: title,
+          body: body
         },
         data: {
-          title,
-          message
+          title: title,
         },
         tokens: tokensArray,
       };
+      console.log('Message payload:', message);
+      // Send notification to all tokens
+      const response = await admin.messaging().sendEachForMulticast(message);
+      console.log(response.responses)
 
-      await admin.messaging().sendEachForMulticast({ payload });
+      // Check for failures
+      if (response.failureCount > 0) {
+        response.responses.forEach((result, index) => {
+          if (result.error) {
+            console.error(`Error sending notification to ${tokensArray[index]}: ${result.error.message}`);
+            console.error(`Error details: ${JSON.stringify(result.error, null, 2)}`);  // Log full error details
+          }
+        });
+      }
+      return res.status(201).json({
+        status: true,
+        message: 'News created successfully and notification sent.',
+      });
     }
-
-    await notification.save();
-    res.status(201).json(notification);
   } catch (err) {
-    next(err);
-  }
-};
+    console.error('Error sending notification', err);
+    return res.status(500).json({
+      "error": "Server error",
+      "message": err?.message
+    });
+  }}
 
 // Get notifications for the authenticated user
 const getNotifications = async (req, res, next) => {

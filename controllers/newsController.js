@@ -62,10 +62,11 @@ const createNews = async (req, res) => {
         const message = {
           notification: {
             title: title,
-            body: content.split(' ').slice(0, 10).join(' ') + '...',
+            body: content.split(' ').slice(0, 20).join(' ') + '...',
           },
           data: {
             title: title,
+            route: '/news'
           },
           tokens: tokensArray,
         };
