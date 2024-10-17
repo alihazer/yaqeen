@@ -28,6 +28,7 @@ const createToken = async (req, res)=>{
 
 const updateToken = async (req, res)=>{
     const { token, isActive } = req.body;
+    console.log(isActive);
     try {
         const tokenFound = await Token.findOne({ token });
         if(!tokenFound){
@@ -36,7 +37,9 @@ const updateToken = async (req, res)=>{
                 message: "Token not found"
             });
         }
-        const updatedToken = Token.findByIdAndUpdate(tokenFound._id, { isActive }, { new: true });
+        console.log(tokenFound);
+        const updatedToken = await Token.findByIdAndUpdate(tokenFound._id, { isActive }, { new: true }).exec();
+        console.log("Token updated succesfully", updatedToken);
         return res.status(200).json({
             status: true,
             message: "Token Updated succesfully",
