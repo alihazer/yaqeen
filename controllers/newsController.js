@@ -6,18 +6,29 @@ const notification = require('../models/notification');
 // Get all news
 const getNews = async (req, res) => {
   try {
-    const news = await News.find().sort({ createdAt: -1 });
+    const pinnedNewsId = '67141898c3a9fc0377de6bcb';
+
+    // Fetch the pinned news separately
+    const pinnedNews = await News.findById(pinnedNewsId);
+
+    // Fetch the rest of the news, excluding the pinned one, and sort them by createdAt
+    const otherNews = await News.find({ _id: { $ne: pinnedNewsId } }).sort({ createdAt: -1 });
+
+    // Combine the pinned news at the beginning of the array
+    const news = pinnedNews ? [pinnedNews, ...otherNews] : otherNews;
+
     res.status(200).json({
       status: true,
       data: news
     });
   } catch (err) {
     return res.status(500).json({
-      "error": "Server error",
-      "message": err?.message
-    })
+      error: "Server error",
+      message: err?.message
+    });
   }
 };
+
 
 const getNewById = async (req, res) => {
   try {
