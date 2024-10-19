@@ -1,6 +1,7 @@
 const News = require('../models/News');
 const admin = require('firebase-admin');
 const Token = require('../models/token');
+const notification = require('../models/notification');
 
 // Get all news
 const getNews = async (req, res) => {
@@ -73,7 +74,7 @@ const createNews = async (req, res) => {
 
         // Send notification to all tokens
         const response = await admin.messaging().sendEachForMulticast(message);
-
+        const notification1 = await notification.create({ title, message:content, totalSent: tokensArray.length, totalDelivered: response.successCount ,totalFailed: response.failureCount });
         return res.status(201).json({
           status: true,
           message: 'News created successfully and notification sent.',

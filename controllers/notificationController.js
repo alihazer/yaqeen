@@ -62,11 +62,11 @@ const createNotification = async (req, res, next) => {
       });
 
       // Check if there are more than 10 invalid tokens
-      if (invalidTokens.length > 10) {
-        // Delete invalid tokens from the database
-        await Token.deleteMany({ token: { $in: invalidTokens } });
-        console.log(`${invalidTokens.length} invalid tokens were deleted.`);
-      }
+      // if (invalidTokens.length > 10) {
+      //   // Delete invalid tokens from the database
+      //   await Token.deleteMany({ token: { $in: invalidTokens } });
+      //   console.log(`${invalidTokens.length} invalid tokens were deleted.`);
+      // }
 
       // Save the notification record in the database
       const notification = new Notification({
