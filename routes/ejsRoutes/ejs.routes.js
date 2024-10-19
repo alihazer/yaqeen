@@ -94,6 +94,10 @@ router.get('/add-notification', isLoggedIn ,(req, res) => {
     res.render('sendNotification');
 });
 
+router.get('/notifications', isLoggedIn ,(req, res) => {
+    res.render('allNotifications');
+});
+
 
 module.exports = router;
 

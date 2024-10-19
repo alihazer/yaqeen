@@ -45,7 +45,6 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    console.log(username, password);
     // Validate request body
     if (!username || !password) {
       return res.status(400).json({ message: 'Please provide all required fields' });

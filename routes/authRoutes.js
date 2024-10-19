@@ -6,8 +6,5 @@ const router = express.Router();
 router.post('/register', register);
 
 // User login
-router.post('/login', (req, res, next)=>{
-    console.log('login route');
-    next();
-} ,login);
+router.post('/login' ,login);
 module.exports = router;

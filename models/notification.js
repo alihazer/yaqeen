@@ -9,14 +9,17 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+  totalSent: {
+    type: Number,
+    default: 0,
   },
-  read: {
-    type: Boolean,
-    default: false,
+  totalDelivered: {
+    type: Number,
+    default: 0,
+  },
+  totalFailed: {
+    type: Number,
+    default: 0,
   },
 }, { timestamps: true });
 
