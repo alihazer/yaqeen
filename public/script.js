@@ -36,7 +36,11 @@ document.getElementById('addNewsForm')?.addEventListener('submit', async (e) => 
 
     if (response.ok) {
         alert('News added successfully!');
-        window.location.href = '/home'; // Redirect to home page after adding news
+        // clear the form
+        document.getElementById('title').value = '';
+        document.getElementById('content').value = '';
+        document.getElementById('source').value = '';
+        
     } else {
         alert('Failed to add news!');
     }
