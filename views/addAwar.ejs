@@ -1,22 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Awarenes</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h2>Add Awarenes</h2>
         <form id="addAwarForm" method="post">
             <div class="form-group">
-                <label for="title">Title:</label>
+                <label for="title">العنوان</label>
                 <input type="text" class="form-control" id="title" name="title" >
             </div>
             <div class="form-group">
-                <label for="content">Body:</label>
-                <textarea class="form-control" id="content" name="content"  cols="100" rows="100"></textarea>
+                <label for="content">المحتوى</label>
+                <textarea class="form-control" id="content" name="content"  cols="40" rows="40"></textarea>
             </div>
             <div class="form-group">
                 <label for="source">image:</label>

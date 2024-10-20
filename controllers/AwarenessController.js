@@ -1,4 +1,8 @@
 const Awareness = require('../models/Awareness');
+const notification = require('../models/notification');
+const Token = require('../models/token');
+const admin = require('firebase-admin');
+const notificaion = require('../models/notification')
 
 // create a new Awarenes
 const createAwar = async (req, res) => {
@@ -6,9 +10,41 @@ const createAwar = async (req, res) => {
         const { title, content} = req.body;
         const image = req.file ? `/images/${req.file.filename}` : null;
         const newAwarenes = new Awareness({ title, content,image});
+
+        // send notificaion
         await newAwarenes.save();
 
-        return res.status(201).json({ message: 'Awarenes created successfully' });
+        // Fetch all active tokens from the database
+      const tokens = await Token.find({ isActive: true }).select('token -_id');
+      if (tokens.length > 0) {
+        const tokensArray = tokens.map(token => token.token);
+
+        // Prepare the message payload
+        const message = {
+          notification: {
+            title: title,
+            body: content.split(' ').slice(0, 20).join(' ') + '...',
+          },
+          data: {
+            title: title,
+          },
+          tokens: tokensArray,
+        };
+
+        // Send notification to all tokens
+        const response = await admin.messaging().sendEachForMulticast(message);
+        const notification1 = await notification.create({ title, message:content, totalSent: tokensArray.length, totalDelivered: response.successCount ,totalFailed: response.failureCount });
+        return res.status(201).json({
+          status: true,
+          message: 'Awar created successfully and notification sent.',
+        });
+      } else {
+        console.log('No active tokens available to send notifications.');
+        return res.status(200).json({
+          status: false,
+          message: 'No active tokens available.',
+        });
+      }
     }catch(error){
         console.error('Error creating Awarenes:', error);
         return res.status(500).json({ message: 'Error creating Awarenes' });
