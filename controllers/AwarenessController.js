@@ -54,7 +54,7 @@ const createAwar = async (req, res) => {
 // get all Aareness
 const getAwareness = async (req, res) => {
     try{
-        const AWareness = await Awareness.find();
+        const AWareness = await Awareness.find().sort({ createdAt: -1 });
         return res.status(200).json({
             message: 'Awareness retrieved successfully',
             data: AWareness
