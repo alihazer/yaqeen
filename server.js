@@ -8,6 +8,7 @@ const path = require('path');
 const generateSession = require('./utils/generateSession.js');
 const startTelegramSync = require('./controllers/telegramSync.js');
 const cors = require('cors');
+const isLoggedIn = require('./middlewares/isLoggedIn.js');
 
 
 const app = express();
@@ -26,7 +27,7 @@ app.use(express.static('public'));
 
 
 
-app.use('/', require('./routes/ejsRoutes/ejs.routes.js'));
+app.use('/' ,require('./routes/ejsRoutes/ejs.routes.js'));
 
 // Api routes
 app.use('/api/news', require('./routes/newsRoutes'));
