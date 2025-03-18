@@ -19,10 +19,12 @@
     "express": "^4.21.0",
     "fcm-notification": "^2.0.0",
     "firebase-admin": "^12.6.0",
+    "input": "^1.0.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "telegram": "^2.26.22",
     "yaqeen": "file:"
   },
   "devDependencies": {

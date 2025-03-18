@@ -1,7 +1,7 @@
 const News = require('../models/News');
 const admin = require('firebase-admin');
-const Token = require('../models/token');
-const notification = require('../models/notification');
+const sendNotification = require('../utils/sendNotification.js');
+
 
 // Get all news
 const getNews = async (req, res) => {
@@ -64,43 +64,13 @@ const createNews = async (req, res) => {
 
     if (newNews) {
       console.log('News created successfully:', newNews);
-
-      // Fetch all active tokens from the database
-      const tokens = await Token.find({ isActive: true }).select('token -_id');
-      if (tokens.length > 0) {
-        const tokensArray = tokens.map(token => token.token);
-
-        // Prepare the message payload
-        const message = {
-          notification: {
-            title: title,
-            body: content.split(' ').slice(0, 20).join(' ') + '...',
-          },
-          data: {
-            title: title,
-            route: '/news'
-          },
-          tokens: tokensArray,
-        };
-
-        // Send notification to all tokens
-        const response = await admin.messaging().sendEachForMulticast(message);
-        const notification1 = await notification.create({ title, message:content, totalSent: tokensArray.length, totalDelivered: response.successCount ,totalFailed: response.failureCount });
-        return res.status(201).json({
-          status: true,
-          message: 'News created successfully and notification sent.',
-        });
-      } else {
+      const notifications = await sendNotification(newNews.content, newNews.title, '/news');
+      if (!notifications) {
         console.log('No active tokens available to send notifications.');
-        return res.status(200).json({
-          status: false,
-          message: 'No active tokens available.',
-        });
       }
-    } else {
-      return res.status(400).json({
-        status: false,
-        message: 'Failed to create news.',
+      return res.status(201).json({
+        status: true,
+        message: 'News created successfully and notification sent.',
       });
     }
   } catch (error) {

@@ -5,6 +5,8 @@ const {dbConnect} = require('./config/dbConnect.js')
 const cookieParser = require('cookie-parser');
 const admin = require('firebase-admin');
 const path = require('path');
+const generateSession = require('./utils/generateSession.js');
+const startTelegramSync = require('./controllers/telegramSync.js');
 const cors = require('cors');
 
 
@@ -21,6 +23,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static('public'));
+
+
 
 app.use('/', require('./routes/ejsRoutes/ejs.routes.js'));
 
@@ -55,7 +59,10 @@ const serviceAccount = {
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
-
+console.log('TELEGRAM CREDS', process.env.TELEGRAM_API_ID, process.env.TELEGRAM_API_HASH);
+// generateSession();
+// start telegram sync
+startTelegramSync();
 
 
 
